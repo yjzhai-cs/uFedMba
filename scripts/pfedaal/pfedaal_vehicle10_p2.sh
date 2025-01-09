@@ -24,7 +24,7 @@ do
     --local_view \
     --noise=0 \
     --L=10 \
-    --tau=3 \
+    --tau=5 \
     --mu=0.001 \
     --gpu=4 \
     --print_freq=10 \

@@ -344,27 +344,30 @@ for iteration in range(args.rounds):
     # personalized_layers_parameters = aggregate_parameters(client_model_personalized_layers_params_list, weights)
     for index, idx in enumerate(idxs_users):
         client_personalized_params = client_model_personalized_layers_params_list[index]
-    #     # smooth the local base model
-    #     if args.frac > 0.5 and len(clients_history_loss[idx]) >= args.tau \
-    #         and len(clients_history_personalized_layers_params[idx] >= args.tau):
+        # smooth the local base model
+        if args.frac >= 0.1 and len(clients_history_loss[idx]) >= args.tau \
+            and len(clients_history_personalized_layers_params[idx]) >= args.tau:
 
-    #         length = len(clients_history_loss[idx])
+            length = len(clients_history_loss[idx])
 
-    #         history_loss = copy.deepcopy(clients_history_loss[length - args.tau:])
-    #         history_personalized_params = copy.deepcopy(clients_history_personalized_layers_params[idx][length - args.tau:])
+            history_loss = copy.deepcopy(clients_history_loss[idx][length - args.tau:])
+            history_personalized_params = copy.deepcopy(clients_history_personalized_layers_params[idx][length - args.tau:])
 
-    #         max_score, min_score = 0, 0xffffff
-    #         for i in range(length):
-    #             if history_loss[i] > max_score:
-    #                 max_score = history_loss[i]
-    #             if history_loss[i] < min_score:
-    #                 min_score = history_loss[i]
+            max_score, min_score = 0, 0xffffff
+            for i in range(len(history_loss)):
+                if history_loss[i] > max_score:
+                    max_score = history_loss[i]
+                if history_loss[i] < min_score:
+                    min_score = history_loss[i]
 
-    #         for i in range(length):
-    #             history_loss[i] = (max_score - history_loss[i]) / (max_score - min_score)
+            for i in range(len(history_loss)):
+                history_loss[i] = (max_score - history_loss[i]) / (max_score - min_score)
 
-    #         scores = torch.tensor(history_loss, device=args.device)
-    #         client_personalized_params = aggregate_parameters(history_personalized_params, scores)
+            scores = torch.tensor(history_loss, device=args.device)
+            scores = scores / torch.sum(scores)
+            print(scores)
+
+            client_personalized_params = aggregate_parameters(history_personalized_params, scores)
 
         # personalized 
         temp_clients_delta_list = clients_delta_list[:index]
@@ -387,7 +390,7 @@ for iteration in range(args.rounds):
 
             gamma_matrix.append(gamma_list)
         
-        print(gamma_matrix)
+        # print(gamma_matrix)
         personalized_layers_parameters = personalize_parameters(client_personalized_params, 
             gamma_matrix, temp_clients_model_personalized_layers_params_list)
 

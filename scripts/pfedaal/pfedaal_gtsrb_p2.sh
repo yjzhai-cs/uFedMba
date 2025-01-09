@@ -1,4 +1,4 @@
-for trial in 1
+for trial in 2 3
 do
     dir='../../save_results/gtsrb/percentage20/pfedaal'
     if [ ! -e $dir ]; then
@@ -24,7 +24,7 @@ do
     --local_view \
     --noise=0 \
     --L=4 \
-    --tau=3 \
+    --tau=5 \
     --mu=0.001 \
     --gpu=6 \
     --print_freq=10 \
