@@ -24,7 +24,7 @@ def compute_cos(A: torch.Tensor, B: torch.Tensor) -> torch.Tensor:
     a = A.flatten()
     b = B.flatten()
 
-    return torch.sum(a * b) / (torch.norm(a) * torch.norm(b) + 1e-12)
+    return torch.sum(a * b) / (torch.norm(a.float()) * torch.norm(b.float()) + 1e-12)
 
 class Client_pFedAAL(object):
     def __init__(self, name, model, local_bs, local_ep, lr, momentum, device, L, mu,
@@ -68,7 +68,7 @@ class Client_pFedAAL(object):
                 fed_prox_reg = 0.0
                 for param_name, param in self.net.state_dict().items():
                     if param_name in self.based_layers_name:
-                        fed_prox_reg += ((self.mu / 2) * torch.norm((param - original_parameters[param_name]))**2)
+                        fed_prox_reg += ((self.mu / 2) * torch.norm((param.float() - original_parameters[param_name].float()))**2)
                 
                 # print("fed_prox_reg: ")
                 # print(fed_prox_reg)

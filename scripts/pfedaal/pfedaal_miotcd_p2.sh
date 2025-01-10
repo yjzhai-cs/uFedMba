@@ -1,4 +1,4 @@
-for trial in 1 2 3
+for trial in 2 3
 do
     dir='../../save_results/miotcd/percentage20/pfedaal'
     if [ ! -e $dir ]; then
